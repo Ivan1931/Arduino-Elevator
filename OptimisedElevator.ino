@@ -1,4 +1,3 @@
-
 /**SUMMARY**
     * The elevator program waits until a button is selected. When a button is selected the elevator will move towards its associated floor
     
@@ -52,6 +51,7 @@ void setup () {
     pinMode(engineForwardPin, OUTPUT);
     pinMode(engineBackwardPin, OUTPUT);
 }
+
 void loop () {
    /* if (DEBUG) {
         currentFloor = Serial.read ();
@@ -75,6 +75,7 @@ void loop () {
             executeTask ();
     updateLEDs ();    
 }
+
 /**
     Gets the elevator to start moving towards the next floor it should visit
 */
@@ -86,6 +87,7 @@ void executeTask(){
           startElevator();
    }
 }
+
 /**
   Returns true if there is still a floor to visit in direction specified
 */
@@ -97,18 +99,22 @@ boolean taskInDirection(boolean pcurrentDirection) {
     }
     return false;
 }
+
 void setupExteriorButtons () {
     for (int i = 0; i < NUM_EXTERIOR; i++)
         pinMode (exteriorButtonPins[i], INPUT);
 }
+
 void setupInteriorButtons () {
     for (int i = 0 ; i < NUM_INTERIOR; i++)
         pinMode (interiorButtonPins[i], INPUT);
 }
+
 void setupLEDPins () {
     for (int i = 0 ; i < NUM_LEDS; i++) 
         pinMode (outputLEDPins[i], OUTPUT);
 }
+
 //Returns true if a button press is detected
 boolean buttonPressDetected () {
     
@@ -116,6 +122,7 @@ boolean buttonPressDetected () {
            || readInteriorButtonStates ());
     
 }
+
 boolean readExteriorButtonStates () {
     int count = 0;
     for (int i = 0 ; i < 4; i++) {
@@ -131,6 +138,7 @@ boolean readExteriorButtonStates () {
     }
     return false;
 }
+
 boolean hasReachedFloor () {
     if (digitalRead (checkFloorPin) && !floorDetectionLock && (millis() - timeAtUnlocked > MAX_BETWEEN_FLOOR_SENSED)) {
         Serial.println("Detected reached floor");
@@ -139,6 +147,7 @@ boolean hasReachedFloor () {
     }
     return false;
 }
+
 /**
     Digital reads all of the buttons and updates the interiorSelected flags if a button is pressed
 */
@@ -155,6 +164,7 @@ boolean readInteriorButtonStates  () {
     }
     return false;
 }
+
 /**
   Returns true if an interior button selection for the floor at index specified was made or an 
   exterior button that is in the same direction as the current floors direction has been selected.
@@ -169,9 +179,11 @@ boolean shouldStopAtFloor (int floorIndex, boolean pcurrentDirection) {
               return shouldStopAtFloorTwo (pcurrentDirection);
      }
 }
+
 boolean shouldStopAtFloorZero (boolean pcurrentDirection) {
     return (!pcurrentDirection && exteriorSelected[0]) ||interiorSelected[0];    
 }
+
 boolean shouldStopAtFloorOne (boolean pcurrentDirection) {
     return (pcurrentDirection && exteriorSelected[2])
               || (!pcurrentDirection && exteriorSelected[1])
@@ -181,9 +193,11 @@ boolean shouldStopAtFloorOne (boolean pcurrentDirection) {
                  )
               || interiorSelected[1];
 }
+
 boolean shouldStopAtFloorTwo (boolean pcurrentDirection) {
     return (pcurrentDirection && exteriorSelected[3]) || interiorSelected[2];
 }
+
 /**
     Increments or decrements floorReached variable depending on direction of the elevator
     Ensures that the floor is marked as visited by deactivating its floor visited commands
@@ -209,6 +223,7 @@ boolean floorReachedEvent() {
     }  
     return succesfull;
 }
+
 void markFloorAsVisited (int floorIndex) {
     interiorSelected[floorIndex] = false;
     switch (floorIndex) {
@@ -231,6 +246,7 @@ void markFloorAsVisited (int floorIndex) {
         break;
     }
 }
+
 void changeDirection () {
       Serial.print("Changed direction to: " );
       Serial.println (!currentDirection);
@@ -238,6 +254,7 @@ void changeDirection () {
       digitalWrite (engineForwardPin, !currentDirection);
       digitalWrite (engineBackwardPin, currentDirection);
 }
+
 void stopElevator () {
       Serial.print("Did stop at floor: " ) ;
       Serial.println (currentFloor);
@@ -247,6 +264,7 @@ void stopElevator () {
       digitalWrite (engineBackwardPin, LOW);
       halt = true;
 }
+
 void startElevator () {
       Serial.print("Started from floor: ");
       Serial.println (currentFloor);
@@ -256,6 +274,7 @@ void startElevator () {
       floorDetectionLock = false;
       timeAtUnlocked = millis();
 }
+
 void updateLEDs () {
      for (int i = 0; i < NUM_FLOORS; i++) {
          if (shouldStopAtFloor(i, currentDirection))
@@ -269,6 +288,7 @@ void updateLEDs () {
              
      }
 }
+
 void printExteriorButtonStates () {
       for (int i = 0 ; i < NUM_EXTERIOR; i++) {
             Serial.print ("Exterior Button : ");
@@ -276,6 +296,7 @@ void printExteriorButtonStates () {
             Serial.println (exteriorSelected[i] ? " TRUE " : " FALSE ");
       }
 }
+
 void printInteriorButtonStates () {
     for (int i = 0 ; i < NUM_INTERIOR; i++) {
             Serial.print ("Interior Button : ");
@@ -283,6 +304,7 @@ void printInteriorButtonStates () {
             Serial.println (interiorSelected[i] ? " TRUE " : " FALSE ");
       }
 }
+
 int getFloorForExteriorButton (int buttonIndex) {
       switch (buttonIndex) {
            case 0: return 0;
